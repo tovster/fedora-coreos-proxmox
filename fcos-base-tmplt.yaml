@@ -5,14 +5,8 @@
         inline: |
           #!/bin/bash
           
-          OUT=/etc/console-login-helper-messages/motd.d/22_geco.motd
+          OUT=/etc/console-login-helper-messages/motd.d/22_hydrogen.motd
           
-          echo -e "\nWelcome on a server powered by\n" > ${OUT}
-          echo -e '\e[33m    ______                      _ ______' >> ${OUT}
-          echo -e '\e[33m   / ____/__  _________        (_)_  __/' >> ${OUT}
-          echo -e '\e[33m  / / __/ _ \/ ___/ __ \  __   / / / /' >> ${OUT}
-          echo -e '\e[33m / /_/ /  __/ /__/ /_/ / |__| / / / /' >> ${OUT}
-          echo -e '\e[33m \____/\___/\___/\____/      /_/ /_/\n\n' >> ${OUT}
           eval "$(grep -E "^(NAME=|VARIANT=)" /etc/os-release)" && echo -e "\e[33mOperating System:\e[0m ${NAME} ${VARIANT}" >> ${OUT}
           eval "$(grep ^OSTREE_VERSION /etc/os-release)" && echo -e "\e[33mVersion:\e[0m ${OSTREE_VERSION}" >> ${OUT}
           echo -e "\e[33mKernel:\e[0m $(uname -r)" >> ${OUT}
@@ -260,21 +254,6 @@
 
           exit 0 
 
-# geco-issue
-    - path: /etc/console-login-helper-messages/issue.d/00_geco.issue
-      mode: 0644
-      contents:
-        inline: |
-
-          Welcome on a server powered by
-
-            ,----.                                   ,--. ,--------.
-           '  .-./     ,---.   ,---.  ,---.  ,-----. `--' '--.  .--'
-           |  | .---. | .-. : | .--' | .-. | '-----' ,--.    |  |
-           '  '--'  | \\   --. \\ `--. ' '-' '         |  |    |  |
-            `------'   `----'  `---'  `---'          `--'    `--'
-            
-          .
 
 # kernel config
     - path: /etc/sysctl.d/20-silence-audit.conf
@@ -355,3 +334,24 @@ systemd:
             [Service]
             ExecStart=
             ExecStart=/sbin/fstrim -av
+
+# setup and install portainer
+    - name: setup-portainer.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Tovster Setup Portainer
+        After=network-online.target
+        Require=network-online.target
+        ConditionPathExists=!/var/lib/portainer.stamp
+
+        [Service]
+        Type=oneshot
+        RemainAfterExit=yes
+        ExecStart=/usr/bin/docker volume create portainer_data
+        ExecStart=/usr/bin/docker run --privileged=true -d -p 8000:8000 -p 9000:9000 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce
+        ExecStart=/bin/touch /var/lib/portainer.stamp
+        ExecStart=/bin/systemctl --no-block reboot
+
+        [Install]
+        WantedBy=multi-user.target

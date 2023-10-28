@@ -19,8 +19,8 @@ VMDISK_OPTIONS=$VMDISK_OPTIONS
 TEMPLATE_IGNITION="fcos-base-tmplt.yaml"
 
 # fcos version
-STREAMS=stable
-VERSION=38.20231002.3.1
+STREAMS=$STREAMS
+VERSION=$VERSION
 PLATFORM=qemu
 BASEURL=https://builds.coreos.fedoraproject.org
 
@@ -77,7 +77,7 @@ esac
 
 # create a new VM
 echo "Create fedora coreos vm ${VMID}"
-qm create ${TEMPLATE_VMID} --name fcos-tmplt
+qm create ${TEMPLATE_VMID} --name $TEMPLATE_NAME
 qm set ${TEMPLATE_VMID} --memory 4096 \
 			--cpu host \
 			--cores 4 \
@@ -89,7 +89,7 @@ qm set ${TEMPLATE_VMID} --memory 4096 \
 			--boot c --bootdisk scsi0
 
 template_vmcreated=$(date +%Y-%m-%d)
-qm set ${TEMPLATE_VMID} --description "Fedora CoreOS - Geco-iT Template
+qm set ${TEMPLATE_VMID} --description "Fedora CoreOS
 
  - Version             : ${VERSION}
  - Cloud-init          : true
@@ -98,9 +98,8 @@ Creation date : ${template_vmcreated}
 "
 
 qm set ${TEMPLATE_VMID} --net0 virtio,bridge=vmbr0
-#qm set ${TEMPLATE_VMID} --net1 virtio,bridge=vmbr1
 
-echo -e "\nCreate Cloud-init vmdisk..."
+echo -e "\nCreating Cloud-init vmdisk..."
 qm set ${TEMPLATE_VMID} --ide2 ${TEMPLATE_VMSTORAGE}:cloudinit
 
 # import fedora disk
@@ -120,6 +119,6 @@ qm set ${TEMPLATE_VMID} -hookscript ${SNIPPET_STORAGE}:snippets/hook-fcos.sh
 
 
 # convert vm template
-echo -n "Convert VM ${TEMPLATE_VMID} in proxmox vm template... "
+echo -n "Converting VM ${TEMPLATE_VMID} in proxmox vm template... "
 qm template ${TEMPLATE_VMID} &> /dev/null || true
 echo "[done]"
