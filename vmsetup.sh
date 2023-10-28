@@ -44,10 +44,11 @@ pvesh get /storage/${SNIPPET_STORAGE} --noborder --noheader &> /dev/null || {
 echo "[ok]"
 
 # pve storage snippet enable
-pvesh get /storage/${SNIPPET_STORAGE} --noborder --noheader | grep snippets || {
-	echo "You musr activate content snippet on storage: ${SNIPPET_STORAGE}"
-	exit 1
-}
+# Disabling check
+# pvesh get /storage/${SNIPPET_STORAGE} --noborder --noheader | grep snippets || {
+# 	echo "You musr activate content snippet on storage: ${SNIPPET_STORAGE}"
+# 	exit 1
+# }
 
 # copy files
 echo "Copy hook-script and ignition config to snippet storage..."
