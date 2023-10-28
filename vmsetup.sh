@@ -53,6 +53,7 @@ echo "[ok]"
 # copy files
 echo "Copy hook-script and ignition config to snippet storage..."
 snippet_storage="$(pvesh get /storage/${SNIPPET_STORAGE} --noborder --noheader | grep ^path | awk '{print $NF}')"
+echo "${snippet_storage}"
 cp -av ${TEMPLATE_IGNITION} hook-fcos.sh ${snippet_storage}/snippets
 sed -e "/^COREOS_TMPLT/ c\COREOS_TMPLT=${snippet_storage}/snippets/${TEMPLATE_IGNITION}" -i ${snippet_storage}/snippets/hook-fcos.sh
 chmod 755 ${snippet_storage}/snippets/hook-fcos.sh
