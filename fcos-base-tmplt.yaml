@@ -5,7 +5,7 @@
         inline: |
           #!/bin/bash
           
-          OUT=/etc/console-login-helper-messages/motd.d/22_hydrogen.motd
+          OUT=/etc/console-login-helper-messages/motd.d/22_geco.motd
           
           eval "$(grep -E "^(NAME=|VARIANT=)" /etc/os-release)" && echo -e "\e[33mOperating System:\e[0m ${NAME} ${VARIANT}" >> ${OUT}
           eval "$(grep ^OSTREE_VERSION /etc/os-release)" && echo -e "\e[33mVersion:\e[0m ${OSTREE_VERSION}" >> ${OUT}
