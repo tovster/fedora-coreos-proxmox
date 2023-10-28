@@ -11,16 +11,16 @@ export LANG=C
 export LC_ALL=C
 
 # template vm vars
-TEMPLATE_VMID=$TEMPLATE_VMID
-TEMPLATE_VMSTORAGE=$TEMPLATE_VMSTORAGE
-SNIPPET_STORAGE=$SNIPPET_STORAGE
-VMDISK_OPTIONS=$VMDISK_OPTIONS
+TEMPLATE_VMID=${TEMPLATE_VMID}
+TEMPLATE_VMSTORAGE=${TEMPLATE_VMSTORAGE}
+SNIPPET_STORAGE=${SNIPPET_STORAGE}
+VMDISK_OPTIONS=${VMDISK_OPTIONS}
 
 TEMPLATE_IGNITION="fcos-base-tmplt.yaml"
 
 # fcos version
-STREAMS=$STREAMS
-VERSION=$VERSION
+STREAMS=${STREAMS}
+VERSION=${VERSION}
 PLATFORM=qemu
 BASEURL=https://builds.coreos.fedoraproject.org
 
@@ -44,11 +44,10 @@ pvesh get /storage/${SNIPPET_STORAGE} --noborder --noheader &> /dev/null || {
 echo "[ok]"
 
 # pve storage snippet enable
-# Disabling check
-# pvesh get /storage/${SNIPPET_STORAGE} --noborder --noheader | grep snippets || {
-# 	echo "You musr activate content snippet on storage: ${SNIPPET_STORAGE}"
-# 	exit 1
-# }
+pvesh get /storage/${SNIPPET_STORAGE} --noborder --noheader | grep snippets || {
+	echo "You musr activate content snippet on storage: ${SNIPPET_STORAGE}"
+	exit 1
+}
 
 # copy files
 echo "Copy hook-script and ignition config to snippet storage..."
@@ -79,7 +78,7 @@ esac
 
 # create a new VM
 echo "Create fedora coreos vm ${VMID}"
-qm create ${TEMPLATE_VMID} --name $TEMPLATE_NAME
+qm create ${TEMPLATE_VMID} --name ${TEMPLATE_NAME}
 qm set ${TEMPLATE_VMID} --memory 4096 \
 			--cpu host \
 			--cores 4 \
