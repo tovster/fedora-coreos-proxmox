@@ -2,6 +2,21 @@
 
 Fedora CoreOS template for proxmox with cloudinit support
 
+## Forked Notes
+
+I made a couple of small changes from Geco-IT's original repo. Feel free to fork as needed.
+
+Template configuration can now be done with envvars.
+```sh
+source template_config.conf
+./vmsetup.sh
+```
+
+It pulls the latest version as of this current commit and has all the required fixes. Huge thanks to [
+MiLK_MaN](https://forum.proxmox.com/members/milk_man.52335/) for [his fixes for newer CoreOS versions](https://forum.proxmox.com/threads/howto-wrapper-script-to-use-fedora-coreos-ignition-with-proxmox-cloud-init-system-for-docker-workloads.86494/post-463507).
+
+---
+
 ## Create FCOS VM Template
 
 ### Configuration
@@ -90,3 +105,6 @@ Only these parameters are supported by our cloudinit wrapper:
 * IP Configuration (ipv4 only)
 
 The settings are applied at boot
+
+
+[def]: https://forum.proxmox.com/members/milk_man.52335/
