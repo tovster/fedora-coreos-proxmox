@@ -302,6 +302,45 @@ systemd:
         [Install]
         WantedBy=multi-user.target
 
+# setup and install portainer
+    - name: setup-portainer.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Tovster Setup Portainer
+        After=network-online.target
+        Require=network-online.target
+        ConditionPathExists=!/var/lib/portainer.stamp
+
+        [Service]
+        Type=oneshot
+        RemainAfterExit=yes
+        ExecStart=/usr/bin/docker volume create portainer_data
+        ExecStart=/usr/bin/docker run --privileged=true -d -p 8000:8000 -p 9000:9000 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce
+        ExecStart=/bin/touch /var/lib/portainer.stamp
+
+        [Install]
+        WantedBy=multi-user.target
+
+# setup and install docker-compose
+    - name: setup-dockercompose.service
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Tovster Setup Docker Compose
+        After=network-online.target
+        Require=network-online.target
+        ConditionPathExists=!/var/lib/docker_compose.stamp
+
+        [Service]
+        Type=oneshot
+        RemainAfterExit=yes
+        ExecStart=/bin/rpm-ostree install docker-compose
+        ExecStart=/bin/touch /var/lib/docker_compose.stamp
+
+        [Install]
+        WantedBy=multi-user.target
+
 # qemu-guest-agent
     - name: setup-qemu-guest-agent.service
       enabled: true
@@ -335,24 +374,3 @@ systemd:
             [Service]
             ExecStart=
             ExecStart=/sbin/fstrim -av
-
-# setup and install portainer
-    - name: setup-portainer.service
-      enabled: true
-      contents: |
-        [Unit]
-        Description=Tovster Setup Portainer
-        After=network-online.target
-        Require=network-online.target
-        ConditionPathExists=!/var/lib/portainer.stamp
-
-        [Service]
-        Type=oneshot
-        RemainAfterExit=yes
-        ExecStart=/usr/bin/docker volume create portainer_data
-        ExecStart=/usr/bin/docker run --privileged=true -d -p 8000:8000 -p 9000:9000 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce
-        ExecStart=/bin/touch /var/lib/portainer.stamp
-        ExecStart=/bin/systemctl --no-block reboot
-
-        [Install]
-        WantedBy=multi-user.target
