@@ -356,3 +356,22 @@ systemd:
 
         [Install]
         WantedBy=multi-user.target
+
+# getting the docker daemon to start on startup
+    - name: "enable-docker.service"
+      enabled: true
+      contents: |
+        [Unit]
+        Description=Tovster Enable Docker
+        After=network-online.target
+        Require=network-online.target
+        ConditionPathExists=!/var/lib/docker.stamp
+
+        [Service]
+        Type=oneshot
+        RemainAfterExit=yes
+        ExecStart=systemctl enable docker
+        ExecStart=/bin/touch /var/lib/docker.stamp
+
+        [Install]
+        WantedBy=multi-user.target
