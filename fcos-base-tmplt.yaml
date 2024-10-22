@@ -375,24 +375,3 @@ systemd:
 
         [Install]
         WantedBy=multi-user.target
-
-# disableing systemd.resolved for pihole instances
-    - name: "disable-resolved.service"
-      enabled: true
-      contents: |
-        [Unit]
-        Description=Tovster Disable Resolved
-        After=network-online.target
-        Require=network-online.target
-        ConditionPathExists=!/var/lib/resolveddisable.stamp
-
-        [Service]
-        Type=oneshot
-        RemainAfterExit=yes
-        ExecStart=sed -r -i.orig 's/#?DNSStubListener=yes/DNSStubListener=no/g' /etc/systemd/resolved.conf
-        ExecStart=sh -c 'rm /etc/resolv.conf && ln -s /run/systemd/resolve/resolv.conf /etc/resolv.conf'
-        ExecStart=systemctl restart systemd-resolved
-        ExecStart=/bin/touch /var/lib/resolveddisable.stamp
-
-        [Install]
-        WantedBy=multi-user.target
