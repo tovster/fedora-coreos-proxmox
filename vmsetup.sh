@@ -98,6 +98,9 @@ qm set ${TEMPLATE_VMID} --description "Fedora CoreOS
 Creation date : ${template_vmcreated}
 "
 
+# add virtual serial port 
+qm set ${TEMPLATE_VMID} -serial0 socket
+
 qm set ${TEMPLATE_VMID} --net0 virtio,bridge=vmbr0
 
 echo -e "\nCreating Cloud-init vmdisk..."
